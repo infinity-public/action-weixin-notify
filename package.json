@@ -1,0 +1,17 @@
+{
+  "name": "action-weixin-notify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/index.js -o lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@actions/core": "1.11.1",
+    "@actions/github": "6.0.0",
+    "@vercel/ncc": "0.38.2"
+  }
+}

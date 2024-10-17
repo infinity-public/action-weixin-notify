@@ -1,0 +1,20 @@
+name: Notify Deployment Status
+
+description: A GitHub Action that sends deployment status notifications to a specified URL.
+
+inputs:
+  notify-url:
+    description: 'The URL to send the notification to.'
+    required: true
+
+  notify-project:
+    description: 'The name of the project to include in the notification.'
+    required: true
+
+  deploy-success:
+    description: 'A boolean string indicating if the deployment was successful. Use "true" or "false".'
+    required: true
+
+runs:
+  using: 'node20'
+  main: 'lib/index.js'
