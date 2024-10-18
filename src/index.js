@@ -32,7 +32,7 @@ async function run() {
     if (context.payload.pull_request) {
       const prUrl = context.payload.pull_request.html_url;
       const prTitle = context.payload.pull_request.title;
-      contentArr.push(`PR详情: [${prTitle}](${prUrl})`);
+      contentArr.push(`PR详情: [查看详情](${prUrl})`);
       if (context.payload.pull_request.body) {
         const prBody = context.payload.pull_request.body;
         const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
