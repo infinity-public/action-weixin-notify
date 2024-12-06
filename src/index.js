@@ -7,18 +7,20 @@ async function run() {
     const notifyUrl = core.getInput('notify-url');
     const notifyProject = core.getInput('notify-project');
     const deploySuccess = core.getInput('deploy-success');
+    const addInfo = core.getInput('add-info');
 
     if (!notifyUrl || !notifyProject || !deploySuccess) {
       core.warning('缺少必要的输入参数。');
       return false;
     }
+    const IS_DEPLOY_SUCCESS = deploySuccess === 'true';
 
     // 获取当前分支
     const branch = context.ref.replace('refs/heads/', '');
     const mainBranchs = ['main', 'master'];
     const titleLevel = mainBranchs.includes(branch) ? '#' : '######';
-    const titleText = deploySuccess === 'true' ? `${branch}部署成功` : `${branch}部署失败`;
-    const titleColor = deploySuccess === 'true' ? 'info' : '#ff0000';
+    const titleText = IS_DEPLOY_SUCCESS ? `${branch}部署成功` : `${branch}部署失败`;
+    const titleColor = IS_DEPLOY_SUCCESS ? 'info' : '#ff0000';
     const { owner, repo } = context.repo;
     // 动态生成 Action 链接
     const actionUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
@@ -26,13 +28,14 @@ async function run() {
     const contentArr = [
       `${titleLevel} <font color="${titleColor}">${titleText}</font>`,
       `项目: **${notifyProject}**`,
-      `Action详情: [查看详情](${actionUrl})`,
     ];
 
+    if (!IS_DEPLOY_SUCCESS) {
+      contentArr.push(`Action详情: [查看详情](${actionUrl})`);
+    }
+
     if (context.payload.pull_request) {
-      const prUrl = context.payload.pull_request.html_url;
-      const prTitle = context.payload.pull_request.title;
-      contentArr.push(`PR详情: [查看详情](${prUrl})`);
+      let linkArr = [];
       if (context.payload.pull_request.body) {
         const prBody = context.payload.pull_request.body;
         const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
@@ -43,10 +46,20 @@ async function run() {
         }
 
         if (links.length > 0) {
-          const linkArr = links.map((link) => `[${link.text}](${link.url})`).join(', ');
-          contentArr.push(`关联: ${linkArr}`);
+          linkArr = links.map((link) => `[${link.text}](${link.url})`).join(', ');
+          contentArr.push(`关联[${links.length}]: ${linkArr}`);
         }
       }
+      if (linkArr.length === 0) {
+        const prUrl = context.payload.pull_request.html_url;
+        const prTitle = context.payload.pull_request.title;
+        const regex = /^Push\s\S+\sfrom\s\S+:\s*/;
+        contentArr.push(`PR详情: [${prTitle.replace(regex, '')}](${prUrl})`);
+      }
+    }
+
+    if (addInfo) {
+      contentArr.push(`附加信息: ${addInfo}`);
     }
 
     try {
