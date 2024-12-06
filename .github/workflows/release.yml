@@ -5,8 +5,9 @@ on:
     types:
       - closed
     branches:
-      - main
-      - beta
+      - master
+      # - main
+      # - beta
 
 jobs:
   Notify:

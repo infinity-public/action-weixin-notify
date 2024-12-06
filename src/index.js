@@ -35,22 +35,21 @@ async function run() {
     }
 
     if (context.payload.pull_request) {
-      let linkArr = [];
+      let links = [];
       if (context.payload.pull_request.body) {
         const prBody = context.payload.pull_request.body;
         const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
-        const links = [];
         let match;
         while ((match = markdownLinkRegex.exec(prBody)) !== null) {
           links.push({ text: match[1], url: match[2] });
         }
-
-        if (links.length > 0) {
-          linkArr = links.map((link) => `[${link.text}](${link.url})`).join(', ');
-          contentArr.push(`关联[${links.length}]: ${linkArr}`);
+        const linkLen = links.length;
+        if (linkLen > 0) {
+          const linkArr = links.map((link) => `[${link.text}](${link.url})`).join(', ');
+          contentArr.push(`关联${linkLen > 1 ? `[${linkLen}]` : ''}: ${linkArr}`);
         }
       }
-      if (linkArr.length === 0) {
+      if (links.length === 0) {
         const prUrl = context.payload.pull_request.html_url;
         const prTitle = context.payload.pull_request.title;
         const regex = /^Push\s\S+\sfrom\s\S+:\s*/;
