@@ -21,4 +21,6 @@ jobs:
         with:
           notify-url: ${{ secrets.NOTIFY_URL }}
           notify-project: '测试 Notify'
-          deploy-success: 'false'
+          deploy-success: 'true'
+          # deploy-success: 'false'
+          # add-info: '附加信息'
