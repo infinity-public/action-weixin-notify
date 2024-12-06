@@ -34,6 +34,7 @@ jobs:
           notify-url: ${{ secrets.NOTIFY_URL }}
           notify-project: '您的项目名称'
           deploy-success: 'false' # 成功时为 'true'
+          add-info: '附加信息'
 ```
 
 ## 输入参数
@@ -43,3 +44,5 @@ jobs:
 - `notify-project`: **必需** 通知消息中显示的项目名称。
 
 - `deploy-success`: **必需** 表示部署是否成功的布尔字符串。使用 `'true'` 或 `'false'`。
+
+- `add-info`: **可选** 附加信息将包含在通知中。
